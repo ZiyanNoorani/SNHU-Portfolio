@@ -4,6 +4,85 @@ Coursework completed at Southern New Hampshire University, organized by term.
 
 ---
 
+# Term 2026 C-5 (Aug–Oct 2026)
+
+## CS-330: Computational Graphics and Visualization (OpenGL/C++)
+
+Files: [`CS-330/`](./CS-330)
+
+### Final Project: 3D Desk Scene *(selected portfolio artifact)*
+OpenGL and C++ scene that recreates my own desk from reference photos I took: a monitor on a riser, a mechanical keyboard, a HyperX QuadCast microphone on its stand, a mouse, and a folding phone stand holding a phone. Every object is built from primitive meshes, textured, and lit with the Phong model. The camera moves with WASD, rises and drops with Q and E, looks around with the mouse, changes speed with the scroll wheel, and switches between perspective and orthographic views with P and O. The ZIP holds the full Visual Studio solution and the texture images.
+
+### Design Decisions Document
+Explains why each object was built from the shapes it uses, how the camera and input controls work, how lighting and textures were chosen, and how the code is organized for reuse.
+
+### CS-330 Reflection
+
+**How do I approach designing software?**
+
+This project taught me to decompose. A microphone on a stand is a cylinder for the body, a smaller cylinder for the neck, and a flat cylinder for the base. A monitor is a thin box for the screen, a slightly larger box behind it for the bezel, and a wider box under it for the riser. Once every object was reduced to primitives, the hard question became proportion, so I picked one object as the unit of measure and sized everything else against it, checking the result against the photo instead of trusting my memory of the desk. My process ran in a fixed order: reference photo, a sketch of each object as shapes, position and scale values written down as named constants, and only then code. Instructor feedback shaped the design along the way. In Module Two my pyramids rendered at full depth and did not match a flat 2D reference, which taught me that matching the reference beats making something look impressive. At Milestone Two the instructor praised the use of constants and functions and asked for one class per object, which pushed the scene toward code where adding a new object does not mean editing a 500-line function. The tactic I will carry forward is the same one in any system design: break the problem into parts small enough to name, define how big each part is relative to the others, and write that plan down before writing code.
+
+**How do I approach developing programs?**
+
+I built the scene one layer per milestone: basic shapes first, then the camera, then textures, then lighting. Inside each layer I added one object or one feature at a time and compiled and ran after every change, because a black screen after ten edits tells you nothing, while a black screen after one edit tells you exactly where to look. Order of transformations was the bug I hit most. Scale, then rotate, then translate gives a different result from any other order, and an object that flies off-screen is almost always a sign the order is wrong. Iteration also meant going back. I added mouse-look and a narrower field of view to the camera during Module Three, ahead of schedule, then tuned the movement speed later once the full scene showed it felt too fast. The toolchain gave me a lesson too. My machine runs Visual Studio 2026, while the course projects pin the v143 platform toolset from Visual Studio 2022, which threw MSB8020 errors until I resolved the toolset mismatch. Over the milestones my code moved from long blocks of copied draw calls, to reusable functions with named constants, to a structure organized around the objects themselves. Each step made the next milestone faster to finish.
+
+**How can computer science help me in reaching my goals?**
+
+My long-term goal is data analytics and data engineering, and graphics is the layer under every chart I will build. Model, view, and projection matrices are the same math that maps a data value to a pixel on a plot, and working with them directly in this course gave me a practical feel for linear algebra that will carry into statistics and machine learning courses. Professionally, the value is knowing how a visualization actually reaches the screen. When a dashboard with 10,000 points renders slowly, I now understand that the cost is in how many objects the GPU draws and how often the scene redraws, which is the kind of problem I can reason about instead of guessing. The habit of matching output to a reference also applies directly to analytics work, where a chart that looks good but misrepresents the scale of the data is worse than no chart.
+
+---
+
+## CS-340: Client/Server Development (Python/MongoDB)
+
+Files: [`CS-340/`](./CS-340)
+
+### Project One: CRUD Python Module
+Python class that wraps PyMongo and exposes create, read, update, and delete methods for the `animals` collection in the `aac` MongoDB database. Authenticates as a dedicated `aacuser` account with read and write access to `aac` only.
+
+### Project Two: Grazioso Salvare Dashboard *(selected portfolio artifact)*
+Dash dashboard built in a Jupyter notebook. Radio-button filters select Water Rescue, Mountain or Wilderness Rescue, or Disaster or Individual Tracking dogs from the Austin Animal Center outcomes data. The filter drives an interactive data table, a chart of breeds in the result, and a Leaflet geolocation map of the selected animal. All database access goes through the Project One CRUD module. Includes the Project Two README (Word document).
+
+### CS-340 Reflection
+
+**How do you write programs that are maintainable, readable, and adaptable?**
+
+I keep each piece of the program responsible for one job. The CRUD module owns the connection to MongoDB and every query. The dashboard owns the layout and the callbacks. The dashboard never imports PyMongo and never builds a connection string; it calls `db.read(query)` and gets back a list of documents. That separation paid off in two ways. First, I tested every query in the CRUD module from the shell before the dashboard existed, so when the dashboard misbehaved I knew the bug lived in the callback, not the database layer. Second, it made one real mistake easy to fix. My Module Six milestone lost points because the notebook called `shelter.read` while the starter code named the CRUD object `db`. The fix was one line, because nothing else in the notebook touched the database directly. The same module could back a Flask REST API, a scheduled script that emails a weekly intake report, or a command-line tool for shelter staff, without rewriting any query logic. The improvement I would make next is moving the username and password out of the code and into environment variables, so the module can be shared without exposing credentials.
+
+**How do you approach a problem as a computer scientist?**
+
+I started from the client's definitions, not from the dashboard. Grazioso Salvare defined each rescue type by specific breeds, sex, and an age range in weeks, so I turned each definition into a MongoDB query and checked the result counts in `mongosh` before writing any Python. I built the indexes around the queries the client would actually run: a single index on `breed` and a compound index on `breed` and `outcome_type`, confirmed with `explain()`. I also created the `aacuser` account with access to only the `aac` database instead of connecting as an administrator. This project differed from earlier courses because it was a full stack, from the database to the user interface, built against a real public dataset with criteria set by a client instead of a fixed exercise. For future client requests I would follow the same order: get the exact questions the client needs answered, write and test those queries first, design indexes around them, create a least-privilege database user, and build the interface last.
+
+**What do computer scientists do, and why does it matter?**
+
+Computer scientists turn data that already exists into tools people can act on. Grazioso Salvare trains dogs for search and rescue, and before this dashboard a trainer looking for water rescue candidates would have had to scan thousands of shelter records by hand and check breed, sex, and age for each one. The dashboard reduces that to one click, shows the matching dogs in a sortable table, and places them on a map so the trainer can see which shelter to call. That saves hours per search and cuts the chance of missing a good candidate because someone misread an intake date.
+
+---
+
+## CS-305: Software Security (Java/Spring Boot)
+
+Files: [`CS-305/`](./CS-305)
+
+### Project Two: Artemis Financial Practices for Secure Software Report *(selected portfolio artifact)*
+Report documenting the security refactoring of Artemis Financial's Spring Boot web application: algorithm cipher selection, a SHA-256 checksum endpoint, a self-signed certificate and HTTPS, a secondary OWASP dependency-check scan, and functional testing of the refactored code.
+
+### CS-305 Reflection
+
+**The client and the problem.** Artemis Financial is a consulting company that builds individualized financial plans covering savings, retirement, investments, and insurance. Its web application uses a RESTful API, and the company wanted it modernized and secured. The specific request was a way to verify file integrity with a checksum and to protect data in transit between the client and the server, since the application handles customers' financial information.
+
+**What I did well, and why secure code matters.** I combined manual code review with an automated scan instead of relying on either one alone. The OWASP dependency-check plug-in found known vulnerabilities in outdated libraries, while the manual review caught issues a scanner cannot see, like input that reaches the application without validation. I also kept secrets out of source code: my NVD API key lives in my Maven `settings.xml` and the project references it as `${nvd.api.key}`, so pushing the project to a public repository does not expose it. Secure coding matters most for a company like Artemis because a breach costs money, clients, and regulatory standing at the same time. IBM's 2025 Cost of a Data Breach report put the global average cost of a breach at $4.44 million, with the financial sector among the five most expensive industries. A small consulting firm cannot absorb that, so security is part of keeping the business open.
+
+**What was challenging or helpful.** The dependency-check report was the hardest part to work with. The first run returned a long list of CVEs, and I had to learn to read CVSS scores, separate libraries the application actually uses from transitive dependencies, and recognize likely false positives. That same process turned out to be the most useful skill from the course, because reading a vulnerability report and deciding what to fix first applies to every project I will work on.
+
+**Increasing layers of security.** I added protection at several layers so no single failure exposes the data. HTTPS with a certificate generated by Java's `keytool` encrypts traffic in transit. The SHA-256 checksum endpoint lets the client confirm a file was not altered. Updating flagged dependencies closes known holes in third-party code. In the future I would run dependency-check automatically in a CI pipeline on every pull request, add a dynamic scanner such as OWASP ZAP to test the running application, and rank mitigations by CVSS score and how exposed the affected code is, fixing internet-facing, high-severity issues first.
+
+**Making sure the code was functional and secure.** After refactoring I ran the application and called the checksum endpoint over `https://localhost:8443` in a browser to confirm it returned the data along with its SHA-256 hash and that the certificate was served correctly. Then I reran the dependency-check scan on the refactored code and compared it with the original report to make sure my changes had not introduced new vulnerable libraries.
+
+**Resources, tools, and practices.** The OWASP Top Ten, the OWASP dependency-check Maven plug-in, the National Vulnerability Database, Java's `keytool`, and the `MessageDigest` class for hashing. The practice I will keep using in every project is storing API keys and passwords in configuration outside the repository.
+
+**What I would show an employer.** The Practices for Secure Software Report shows I can take an existing application, find its weaknesses, fix them, and prove the fixes worked with a before-and-after scan. The before-and-after dependency-check comparison is the clearest evidence, because it shows measurable results instead of a claim that the code is secure.
+
+---
+
 # Term 2026 C-4 (Jul–Aug 2026)
 
 ## CS-230: Operating Platforms (Software Design)
