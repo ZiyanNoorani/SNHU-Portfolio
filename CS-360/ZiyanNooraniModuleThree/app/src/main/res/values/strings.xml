@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">ZiyanNooraniModuleThree</string>
-    <string name="enter_your_name">Enter your name</string>
+    <string name="greeting_default">Enter your name below</string>
+    <string name="name_hint">Your name</string>
     <string name="say_hello">Say Hello</string>
+    <!-- %1$s is replaced with the trimmed contents of nameText -->
+    <string name="greeting_format">Hello, %1$s!</string>
 </resources>
